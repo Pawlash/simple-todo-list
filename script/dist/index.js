@@ -10,12 +10,29 @@ function addTask(title) {
     doneButton.classList.add('done-button');
     doneButton.addEventListener('click', () => {
         taskList.removeChild(li);
+        removeTaskFromStorage(title);
     });
     li.appendChild(doneButton);
     taskList.appendChild(li);
+    saveTaskToStorage(title);
 }
 const saveTasks = () => {
     localStorage.setItem("tasks", JSON.stringify(tasks));
+};
+const saveTaskToStorage = (title) => {
+    const newTask = {
+        id: Date.now(),
+        title: title
+    };
+    tasks.push(newTask);
+    saveTasks();
+};
+const removeTaskFromStorage = (title) => {
+    const index = tasks.findIndex(task => task.title === title);
+    if (index !== -1) {
+        tasks.splice(index, 1);
+        saveTasks();
+    }
 };
 const renderTasks = () => {
     const taskList = document.querySelector(".task-list");
@@ -28,6 +45,7 @@ const renderTasks = () => {
         doneButton.classList.add('done-button');
         doneButton.addEventListener('click', () => {
             taskList.removeChild(li);
+            removeTaskFromStorage(task.title);
         });
         li.appendChild(doneButton);
         taskList.appendChild(li);
